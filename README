@@ -1,85 +1,67 @@
-orcohen14, eranella98
-Or Cohen 318629334, Eran Ella 209350834
-EX: 2
+# Scheduler Class
 
+The `Scheduler` class manages the scheduling and execution of threads in a multi-threaded environment. This README provides an overview of the key methods and functionalities of the `Scheduler` class.
 
-FILES:
-myfile.c -- a file with some code
-myfile.h -- a file with some headers
+## Overview
 
+The `Scheduler` class is responsible for:
+- Maintaining a list of threads and their states.
+- Handling thread scheduling and execution.
+- Supporting operations such as thread creation, termination, blocking, and resuming.
+- Implementing scheduling algorithms such as Round-Robin (RR).
 
-REMARKS:
-We love OS <3
+## Key Methods
 
+### `update_deque()`
+- Updates the deque of ready threads by selecting the next thread to run.
 
-ANSWERS:
+### `jump_to_threads_helper(bool sleep, bool block, bool terminate)`
+- Helper method for jumping to threads based on their state and specified actions.
+- Handles cases such as thread sleep, block, and termination.
 
+### `find_next_id_available()`
+- Finds the next available thread ID for thread creation.
 
-Q1:
-Siglongjmp and sigsetjmp:
-a. Sigsetjmp:
-    Parameters: sigjump_buf env, int savesigs
-    env = variable type sigjump_buf (struct) - saves and restores the program context, "thread descriptor".
-    savesigs = an integer - a flag used to determine if the signal mask is to be saved or not (if it isn't zero, the current signal mask is saved).
+### `terminate_thread(int tid)`
+- Terminates the thread with the specified thread ID.
+- Removes the thread from the scheduler and adjusts its state accordingly.
 
+### `block_ready_thread(int tid)`
+- Blocks the thread with the specified thread ID.
+- Moves the thread from the ready state to the blocked state.
 
-    Return value: returns 0 if returning directly, or returns a user-defined value if we have just arrived here using siglongjmp.
+### `add_thread(sp_thread &thread)`
+- Adds a new thread to the scheduler and sets its initial state to ready.
 
+### `thread_found(int tid)`
+- Finds a thread by its thread ID and returns a shared pointer to it.
 
-    Description:
-    This function saves the stack context and CPU state in env for later use,
-    included optionally is the current signal mask , depends on savesigs parameter.
+### `resume_thread(int tid)`
+- Resumes the execution of a blocked thread with the specified thread ID.
+- Moves the thread from the blocked state to the ready state.
 
+### `sleeping_threads_update()`
+- Updates the state of sleeping threads.
+- Decrements the sleep time of sleeping threads and moves them to the ready state when their sleep time expires.
 
-Siglongjmp:
-    Parameters: sigjmp_buf env, int val
-    env = variable type sigjump_buf (struct) - saves and restores the program context, "thread descriptor".
-    val = an integer - the value that we want sigsetjump to return.
+### `remove_from_sleep(int tid)`
+- Removes a thread from the sleeping state.
 
+### `Clear()`
+- Clears all data structures and resets the scheduler to its initial state.
 
-    Return value: There is no return value from this function, we return the value from sigsetjmp.  
-    Description:
-    This function restores the environment saved by the most recent envocation of sigsetjmp in the same thread with the corresponding sigjmp_buf argument.
+## Round-Robin (RR) Implementation
 
+The Round-Robin scheduling algorithm is implemented in the `Scheduler` class.
+- Each thread is given a fixed time quantum to execute before being preempted.
+- Threads are scheduled in a circular manner, allowing each thread to execute for a specified time slice.
+- If a thread's time quantum expires, it is moved to the end of the ready queue, and the next thread is scheduled.
 
-b.sigsetjmp and siglongjmp affect masking by saving and restoring the signal mask along with the program context,
-They help us to block or unblock signals at specific points in the program.
+## Usage
 
+To use the `Scheduler` class, create an instance of the class and use its methods to manage threads and scheduling.
 
-Q2:
-One general use of user-level threads is in text editor applications that allow users to open multiple documents simultaneously.
-User-level threads can be used to implement background tasks s.a. spell checking, syntax highlighting, and autosaving of the documents.
-
-
-User-level threads are a reasonable choice for this example because they provide a lightweight and flexible mechanism for concurrency.
-that can be managed entirely within the application.
-The text editor can create & manage user-level threads to perform background tasks without the overhead of kernel-level-threads.
-Moreover, user-level threads can communicate & share data by performing simple operations at the code level, s.a. function calls & shared memory.
-
-Q3:
-Advantages:
-    Each tab is independent from other, which is improve security, in addition each tab can be managed easly independently. 
-    If one of the tabs is crash it won't affect on the other tabs (The whole browser doens't crash).
-
-Disadvantages:
-    Each process has its own memory (and doens't share data) which cause high use of memory.
-    Each process is managed by the OS and the user cannot manage each, unlike in threads.
-
-Q4:
-Firstly, when we open the process we typed the process name at terminal, which cause the interrupt SIGINT for each key press.
-After openning the process the OS was taken control and create process with pid accordingly.
-Then, typing kill pid command and click on enter (which cause interrupt SIGINT) cause the shell asks from the OS to exec kill command,
-the OS pause the other threads and kill the process with corresponding pid (which is cause the SIGTERM signal - default for kill cmd).
-
-Q5:
-Real-time: The actual time that passed on OS clock (nevertheless running processes).
 Example:
-    Video or audio files clock on the OS using real time to mesure the time that's the media is playing,
-    from the start of the video or audio until the current point of viewing / listening.
-    It's not affected by any artificial slowing or speeding up.
-
-Virtual-time: The running time of a specific process, the actual time the process runs on the CPU.
-Example:
-    If we want's to mesure & compare running time between few programs or algorithms, we will look at the virtual-time of each and compare.
-    Because we want to mesure the actual time that's the process run on the CPU regardless of other processes running on the same OS
-    (also without count the OS running time that's isolated from the program operation).
+```cpp
+Scheduler scheduler;
+// Add threads, perform scheduling operations, etc.
