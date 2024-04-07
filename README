@@ -1,0 +1,85 @@
+orcohen14, eranella98
+Or Cohen 318629334, Eran Ella 209350834
+EX: 2
+
+
+FILES:
+myfile.c -- a file with some code
+myfile.h -- a file with some headers
+
+
+REMARKS:
+We love OS <3
+
+
+ANSWERS:
+
+
+Q1:
+Siglongjmp and sigsetjmp:
+a. Sigsetjmp:
+    Parameters: sigjump_buf env, int savesigs
+    env = variable type sigjump_buf (struct) - saves and restores the program context, "thread descriptor".
+    savesigs = an integer - a flag used to determine if the signal mask is to be saved or not (if it isn't zero, the current signal mask is saved).
+
+
+    Return value: returns 0 if returning directly, or returns a user-defined value if we have just arrived here using siglongjmp.
+
+
+    Description:
+    This function saves the stack context and CPU state in env for later use,
+    included optionally is the current signal mask , depends on savesigs parameter.
+
+
+Siglongjmp:
+    Parameters: sigjmp_buf env, int val
+    env = variable type sigjump_buf (struct) - saves and restores the program context, "thread descriptor".
+    val = an integer - the value that we want sigsetjump to return.
+
+
+    Return value: There is no return value from this function, we return the value from sigsetjmp.  
+    Description:
+    This function restores the environment saved by the most recent envocation of sigsetjmp in the same thread with the corresponding sigjmp_buf argument.
+
+
+b.sigsetjmp and siglongjmp affect masking by saving and restoring the signal mask along with the program context,
+They help us to block or unblock signals at specific points in the program.
+
+
+Q2:
+One general use of user-level threads is in text editor applications that allow users to open multiple documents simultaneously.
+User-level threads can be used to implement background tasks s.a. spell checking, syntax highlighting, and autosaving of the documents.
+
+
+User-level threads are a reasonable choice for this example because they provide a lightweight and flexible mechanism for concurrency.
+that can be managed entirely within the application.
+The text editor can create & manage user-level threads to perform background tasks without the overhead of kernel-level-threads.
+Moreover, user-level threads can communicate & share data by performing simple operations at the code level, s.a. function calls & shared memory.
+
+Q3:
+Advantages:
+    Each tab is independent from other, which is improve security, in addition each tab can be managed easly independently. 
+    If one of the tabs is crash it won't affect on the other tabs (The whole browser doens't crash).
+
+Disadvantages:
+    Each process has its own memory (and doens't share data) which cause high use of memory.
+    Each process is managed by the OS and the user cannot manage each, unlike in threads.
+
+Q4:
+Firstly, when we open the process we typed the process name at terminal, which cause the interrupt SIGINT for each key press.
+After openning the process the OS was taken control and create process with pid accordingly.
+Then, typing kill pid command and click on enter (which cause interrupt SIGINT) cause the shell asks from the OS to exec kill command,
+the OS pause the other threads and kill the process with corresponding pid (which is cause the SIGTERM signal - default for kill cmd).
+
+Q5:
+Real-time: The actual time that passed on OS clock (nevertheless running processes).
+Example:
+    Video or audio files clock on the OS using real time to mesure the time that's the media is playing,
+    from the start of the video or audio until the current point of viewing / listening.
+    It's not affected by any artificial slowing or speeding up.
+
+Virtual-time: The running time of a specific process, the actual time the process runs on the CPU.
+Example:
+    If we want's to mesure & compare running time between few programs or algorithms, we will look at the virtual-time of each and compare.
+    Because we want to mesure the actual time that's the process run on the CPU regardless of other processes running on the same OS
+    (also without count the OS running time that's isolated from the program operation).
